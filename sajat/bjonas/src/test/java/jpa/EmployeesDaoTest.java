@@ -1,13 +1,34 @@
 package jpa;
 
-//import com.mysql.jdbc.jdbc2.optional.MysqlDataSource;
-
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 
-public class Main {
-    public static void main(String[] args) throws SQLException {
+public class EmployeesDaoTest {
+    @BeforeEach
+    void init(){
+        MysqlDataSource dataSource = new MysqlDataSource();
+        String url = "jdbc:mysql://localhost:3306/employees?useUnicode=true";
+        dataSource.setURL(url);
+        String user = "root";
+        dataSource.setUser(user);
+        String password = "mysql";
+        dataSource.setPassword(password);
+
+        Flyway flyway = Flyway.configure()
+                .locations("db/migrations/mysql")
+                .dataSource(dataSource)
+                .load();
+        flyway.clean();
+        flyway.migrate();
+
+    }
+
+    @Test
+    void test() {
         MysqlDataSource dataSource = new MysqlDataSource();
         String url = "jdbc:mysql://localhost:3306/employees?useUnicode=true";
         dataSource.setURL(url);
@@ -17,8 +38,10 @@ public class Main {
         dataSource.setPassword(password);
 
         try(Connection connection = dataSource.getConnection();
-        Statement statement = connection.createStatement()) {
+            Statement statement = connection.createStatement()) {
             statement.executeUpdate("insert into employees(emp_name) values('John Doe')");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
         try (Connection conn = dataSource.getConnection();
@@ -28,20 +51,9 @@ public class Main {
                 preparedStatement.execute();
             }
         }
-        System.out.println("Hello world!");
 
-        try (Connection conn = dataSource.getConnection();
-             Statement query1 = conn.createStatement();
-             ResultSet resultSet = query1.executeQuery("select emp_name from employees.employees")) {
-
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString("emp_name"));
-            }
-        }
         catch (SQLException e) {
             e.printStackTrace();
         }
-
-
     }
 }
