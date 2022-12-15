@@ -127,4 +127,10 @@ public class EmployeesDaoTest {
             }
         }
     }
+
+    @Test
+    void update() {
+        EmployeesDao employeesDao = new EmployeesDao(this.dataSource);
+
+    }
 }

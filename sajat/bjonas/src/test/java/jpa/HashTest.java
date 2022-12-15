@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import java.util.HashSet;
@@ -41,7 +42,7 @@ public class HashTest {
     }
 
     @BeforeEach
-    void clean() {
+    void setup() {
         personDao.deleteAll();
         IntStream.range(101, 111).boxed()
                 .forEach(ssn -> personDao.save("person "+ ssn, ssn));
@@ -66,5 +67,23 @@ public class HashTest {
         System.out.println(set);
 
         System.err.println("------");
+    }
+
+    @Test
+    void update() {
+        EntityManager em = entityManagerFactory.createEntityManager();
+        Person person = em.find(Person.class, 1L);
+        System.out.println(".......");
+        System.err.println(person);
+        System.out.println(".......");
+        person.setName(person.getName()+"!!!!!");
+        em.getTransaction().begin();
+        em.persist(person);
+        em.getTransaction().commit();
+
+        List<Person> all = personDao.findAll();
+        System.out.println(all.size());
+        all.forEach(System.err::println);
+        System.out.println(".......");
     }
 }
