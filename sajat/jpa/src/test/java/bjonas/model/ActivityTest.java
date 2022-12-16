@@ -5,6 +5,7 @@ import bjonas.dao.ChessDao;
 import bjonas.dao.KutyusDao;
 import bjonas.dao.PersonDao;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.hibernate.LazyInitializationException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,6 +41,10 @@ class ActivityTest {
         animalDao = new AnimalDao(factory);
         animalDao.deleteAll();
         List.of("Cili", "Cirmi", "Cicus Maximus").forEach(n -> animalDao.save(n));
+
+
+        kutyusDao = new KutyusDao(factory);
+        kutyusDao.deleteAll();
 
         personDao = new PersonDao(factory);
         personDao.deleteAll();
@@ -119,6 +124,22 @@ class ActivityTest {
     @Test
     void lazy() {
         System.err.println("LAZY");
+        Kutyus bodri = new Kutyus("Bodri");
+        Person john = new Person("John");
+        john.addKutyus(bodri);
+//        kutyusDao.save(bodri);
+        personDao.save(john);
+
+        Person johnnyClone = personDao.findById(john.getId());
+        assertThrows(LazyInitializationException.class, () ->
+        System.out.println(johnnyClone));
+
+//        Kutyus bodriklón = kutyusDao.findById(bodri.getKutyusId());
+//        Person owner = bodriklón.getOwner();
+//        System.out.println(owner);
+//        System.err.println(bodriklón);
+
+
 
     }
 

@@ -22,6 +22,13 @@ public class PersonDao {
         entityManager.close();
     }
 
+    public void save(Person person) {
+        EntityManager entityManager = factory.createEntityManager();
+        entityManager.getTransaction().begin();
+        entityManager.persist(person);
+        entityManager.getTransaction().commit();
+        entityManager.close();
+    }
     public Person findById(Long id) {
         EntityManager entityManager = factory.createEntityManager();
         Person person = entityManager.find(Person.class, id);

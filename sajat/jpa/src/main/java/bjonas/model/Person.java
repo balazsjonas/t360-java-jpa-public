@@ -25,7 +25,8 @@ public class Person {
 
     private String name;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "owner",
+    cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<Kutyus> kutyusok;
 
     public Person(String name) {

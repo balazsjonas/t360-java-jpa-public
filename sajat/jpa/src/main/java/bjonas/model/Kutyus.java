@@ -10,17 +10,26 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@ToString
+
 public class Kutyus {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long kutyusId;
     private String name;
 
-    @ManyToOne // (fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}) // (fetch = FetchType.LAZY)
     @JoinColumn(name="id")
     private Person owner;
 
     public Kutyus(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "Kutyus{" +
+                "kutyusId=" + kutyusId +
+                ", name='" + name + '\'' +
+                '}';
     }
 }
