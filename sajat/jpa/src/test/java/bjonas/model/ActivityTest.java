@@ -2,6 +2,7 @@ package bjonas.model;
 
 import bjonas.dao.AnimalDao;
 import bjonas.dao.ChessDao;
+import bjonas.dao.KutyusDao;
 import bjonas.dao.PersonDao;
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.junit.jupiter.api.AfterAll;
@@ -27,6 +28,8 @@ class ActivityTest {
 
     ChessDao chessDao;
 
+    KutyusDao kutyusDao;
+
     @BeforeAll
     static void init() {
         factory = Persistence.createEntityManagerFactory("pu");
@@ -43,10 +46,12 @@ class ActivityTest {
         List.of("Anna", "Bela", "Csilla").forEach(n -> personDao.save(n));
 
         chessDao = new ChessDao(factory);
+
         chessDao.deleteAll();
         chessDao.save("A", 1, "Fehér Bástya");
         chessDao.save("B", 1, "Fehér Paci");
         chessDao.save("C", 1, "Fehér Futó");
+        System.err.println("(bjonas)"+ chessDao.findById("B", 1));
     }
 
     @AfterAll
@@ -103,6 +108,23 @@ class ActivityTest {
 
         em.close();
         chessDao.listAll().forEach(System.err::println);
+    }
+
+    @Test
+    void inherit() {
+        Cicus cirmos = new Cicus("Cirmos", "cirmos");
+        animalDao.save(cirmos);
+    }
+
+    @Test
+    void lazy() {
+        System.err.println("LAZY");
+
+    }
+
+    @Test
+    void empty() {
+        System.err.println("Cak fusson a setup");
     }
 
 }

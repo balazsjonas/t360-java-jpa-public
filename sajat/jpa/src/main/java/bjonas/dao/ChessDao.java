@@ -2,6 +2,7 @@ package bjonas.dao;
 
 import bjonas.model.Animal;
 import bjonas.model.ChessTable;
+import bjonas.model.Key;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -22,9 +23,9 @@ public class ChessDao {
         entityManager.close();
     }
 
-    public ChessTable findById(Long id) {
+    public ChessTable findById(String colChar, int rowNum) {
         EntityManager entityManager = factory.createEntityManager();
-        ChessTable table = entityManager.find(ChessTable.class, id);
+        ChessTable table = entityManager.find(ChessTable.class, new Key(colChar, rowNum));
         entityManager.close();
         return table;
     }
@@ -38,7 +39,9 @@ public class ChessDao {
 
     public void delete(ChessTable table) {
         EntityManager entityManager = factory.createEntityManager();
-        entityManager.remove(table);
+        ChessTable managed = entityManager.getReference(ChessTable.class, new Key(table.getColChar(), table.getRowNum()));
+        System.err.println("(bjonas) deleting: "+ managed);
+        entityManager.remove(managed);
         entityManager.close();
 
     }

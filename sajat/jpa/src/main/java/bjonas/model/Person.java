@@ -2,10 +2,9 @@ package bjonas.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.TableGenerator;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -16,17 +15,28 @@ import javax.persistence.TableGenerator;
 public class Person {
 
     @Id
-    @GeneratedValue(generator = "pGen")
-    @TableGenerator(name = "pGen", table="person_id_gen",
-    pkColumnName = "gen_name",
-    valueColumnName = "gen_val",
-
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pGen")
+    @TableGenerator(name = "pGen", table = "person_id_gen",
+            pkColumnName = "gen_name",
+            valueColumnName = "gen_val",
             initialValue = 123, allocationSize = 10)
+
     private Long id;
 
     private String name;
 
+    @OneToMany(mappedBy = "owner")
+    private Set<Kutyus> kutyusok;
+
     public Person(String name) {
         this.name = name;
+    }
+
+    public void addKutyus(Kutyus kutyus) {
+        if (kutyusok == null) {
+            kutyusok = new HashSet<>();
+        }
+        kutyusok.add(kutyus);
+        kutyus.setOwner(this);
     }
 }

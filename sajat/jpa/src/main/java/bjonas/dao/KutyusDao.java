@@ -1,46 +1,47 @@
 package bjonas.dao;
 
 import bjonas.model.Animal;
+import bjonas.model.Kutyus;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 
-public class AnimalDao {
+public class KutyusDao {
     private EntityManagerFactory factory;
 
-    public AnimalDao(EntityManagerFactory factory) {
+    public KutyusDao(EntityManagerFactory factory) {
         this.factory = factory;
     }
 
     public void save(String name) {
-        save(new Animal(name));
+        save(new Kutyus(name));
     }
-    public void save(Animal animal) {
+    public void save(Kutyus kutyus) {
         EntityManager entityManager = factory.createEntityManager();
         entityManager.getTransaction().begin();
-        entityManager.persist(animal);
+        entityManager.persist(kutyus);
         entityManager.getTransaction().commit();
         entityManager.close();
     }
 
-    public Animal findById(Long id) {
+    public Kutyus findById(Long id) {
         EntityManager entityManager = factory.createEntityManager();
-        Animal animal = entityManager.find(Animal.class, id);
+        Kutyus kutyus = entityManager.find(Kutyus.class, id);
         entityManager.close();
-        return animal;
+        return kutyus;
     }
 
-    public List<Animal> listAll() {
+    public List<Kutyus> listAll() {
         EntityManager entityManager = factory.createEntityManager();
-        List<Animal> resultList = entityManager.createQuery("select a from Animal a order by a.name", Animal.class).getResultList();
+        List<Kutyus> resultList = entityManager.createQuery("select a from Kutyus a order by a.name", Kutyus.class).getResultList();
         entityManager.close();
         return resultList;
     }
 
-    public void delete(Animal animal) {
+    public void delete(Kutyus animal) {
         EntityManager entityManager = factory.createEntityManager();
-        Animal managed = entityManager.find(Animal.class, animal.getId());
+        Kutyus managed = entityManager.find(Kutyus.class, animal.getKutyusId());
         entityManager.remove(managed);
         entityManager.close();
 
@@ -48,7 +49,7 @@ public class AnimalDao {
 
     public void deleteAll() {
 //        listAll().forEach(this::delete);
-        List<Animal> animals = listAll();
+        List<Kutyus> animals = listAll();
         for(var a:animals) {
             delete(a);
         }

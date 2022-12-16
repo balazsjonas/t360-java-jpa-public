@@ -38,7 +38,8 @@ public class PersonDao {
 
     public void delete(Person animal) { // nem csak copy-paste :-)
         EntityManager entityManager = factory.createEntityManager();
-        entityManager.remove(animal);
+        Person managed = entityManager.getReference(Person.class, animal.getId());
+        entityManager.remove(managed);
         entityManager.close();
 
     }
